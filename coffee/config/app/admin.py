@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Produtor, ProducaoCafe
 
-# Register your models here.
+
+admin.site.register(Produtor)
+admin.site.register(ProducaoCafe)
