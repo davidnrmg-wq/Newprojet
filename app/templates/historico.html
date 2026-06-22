@@ -1,36 +1,35 @@
-{% load static %}
+{% extends 'base.html' %}
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Histórico</title>
+{% block title %}Histórico - Produção de Café{% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <h1>Histórico de Produção</h1>
 
-<canvas id="grafico" width="400" height="150"></canvas>
+<canvas id="grafico" width="400" height="150" style="margin-bottom: 30px;"></canvas>
 
-<table border="1">
-
-<tr>
-    <th>Terreno</th>
-    <th>Pés</th>
-    <th>Produção</th>
-    <th>Total</th>
-</tr>
-
-{% for dado in dados %}
-<tr>
-    <td>{{ dado.terreno }}</td>
-    <td>{{ dado.pes }}</td>
-    <td>{{ dado.producao_por_pe }}</td>
-    <td>{{ dado.total }}</td>
-</tr>
-{% endfor %}
-
+<table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+    <thead>
+        <tr style="background: #eee;">
+            <th style="padding: 8px;">Produtor</th>
+            <th style="padding: 8px;">Terreno (ha)</th>
+            <th style="padding: 8px;">Pés</th>
+            <th style="padding: 8px;">Produção/Pé</th>
+            <th style="padding: 8px;">Total (kg)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dado in dados %}
+        <tr>
+            <td style="padding: 8px;">{{ dado.produtor.nome }}</td>
+            <td style="padding: 8px;">{{ dado.terreno }}</td>
+            <td style="padding: 8px;">{{ dado.pes }}</td>
+            <td style="padding: 8px;">{{ dado.producao_por_pe }}</td>
+            <td style="padding: 8px;">{{ dado.total|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 <script>
@@ -42,12 +41,18 @@ new Chart(document.getElementById('grafico'), {
     data: {
         labels: labels,
         datasets: [{
-            label: 'Produção',
-            data: data
+            label: 'Produção Total (kg)',
+            data: data,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
         }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true }
+        }
     }
 });
 </script>
-
-</body>
-</html>
+{% endblock %}
