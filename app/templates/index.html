@@ -12,7 +12,14 @@
 <form method="POST">
     {% csrf_token %}
 
-    <input type="number" name="terreno" placeholder="Terreno"><br><br>
+    <select name="produtor_id" required>
+        <option value="">Selecione um Produtor</option>
+        {% for p in produtores %}
+            <option value="{{ p.id }}">{{ p.nome }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <input type="number" name="terreno" placeholder="Terreno" required><br><br>
 
     <input type="number" name="pes" placeholder="Quantidade de pés"><br><br>
 

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import ProducaoCafe
+from .models import ProducaoCafe, Produtor
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 import json
@@ -7,14 +7,25 @@ import json
 @login_required
 def index(request):
     if request.method == "POST":
+        produtor_id = request.POST.get("produtor_id")
         terreno = float(request.POST.get("terreno"))
         pes = int(request.POST.get("pes"))
         producao = float(request.POST.get("producao").replace(",","."))
 
         total = pes * producao
 
+        if produtor_id:
+            produtor = Produtor.objects.get(id=produtor_id)
+        else:
+            # Fallback caso não venha ID (segurança)
+            produtor, _ = Produtor.objects.get_or_create(
+                nome="Produtor Padrão",
+                defaults={"cidade": "Não informada", "telefone": "00000000"}
+            )
+
         ProducaoCafe.objects.create(
             usuario=request.user,
+            produtor=produtor,
             terreno=terreno,
             pes=pes,
             producao_por_pe=producao,
@@ -23,7 +34,8 @@ def index(request):
 
         return render(request, "index.html", {"resultado": total})
 
-    return render(request, "index.html")
+    produtores = Produtor.objects.all()
+    return render(request, "index.html", {"produtores": produtores})
 
 
 @login_required
